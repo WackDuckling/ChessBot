@@ -57,11 +57,106 @@ def checkmovevalid(move):
     # Generic invalid return.
     return False
 
-def checkmovelegal(move):
-    print('borked')
-    # TODO check if a move is legal.
+
+
+def checkmovelegal(move, chessboard, white):
+    # TODO check if a move is legal in a given position. Moves must have already been validated through checkmovevalid as there is no internal error-handling.
     # Unfinished lmao.
+   
+   updatedboard = chessboard
+   
+   # Listing of white and black pieces for use in evaluatecheck
+   whitepieces = ["wk", "wq", "wr", "wn", "wb", "wp"]
+   blackpieces = ["bk", "bq", "br", "bn", "bb", "bp"]
+   
+   # Mapping of array indices to squares for use in later functions.
+   squaremapping = ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", 
+   "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7", 
+   "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6", 
+   "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5", 
+   "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4", 
+   "a3", "b3", "c3", "d3", "e3", "f3", "g3, "h3", 
+   "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2", 
+   "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", 
+   ]
+    # Stores the square that the king in question is located on.
+    kingsquare = ""
+    # TODO Evaluate if a given move of the specificed piece in the given position is legal. Separated out for readability and ease of evaluating check to assess legality of other moves. Does not handle check considerations.
+    def kingmove(move, chessboard):
+        print("king move")
+        return
+    def queenmove(move, chessboard):
+        print("queen move")
+        return
+    def rookmove(move, chessboard):
+        print("rook move")
+        return
+    def bishopmove(move, chessboard):
+        print("bishop move")
+        return
+    def knightmove(move, chessboard):
+        print("knight move")
+        return
+    def pawnmove(move, chessboard):
+        print("pawn move")
+        return
     
+    
+     def evaluatecheck(chessboard, white):
+        # TODO evaluate if the king of a given color is in check in a given position. True is white and false is black.
+        # Returns True if the King is in check and Fasle if the King is not in check.
+        # Find the square that the king is on.
+       if(white):
+           for i, piece in enumerate(chessboard):
+               if(piece == "wk"):
+                   kingsqure = squaremapping[i]
+           for i, piece in enumerate(chessboard):
+               if(piece == "bk"):
+                   if(kingmove("K" + kingsqure, chessboard)):
+                       return False
+               elif(piece == "bn"):
+               # Continue here. use index to pick appropriate piece if necessary when multiple potential originating pieces.
+                    
+       else:
+            for i, piece in enumerate(chessboard):
+               if(piece == "bk"):
+                   kingsqure = squaremapping[i]
+    
+    
+  
+    if(move[0] == "K"):
+         if(kingmove(move, chessboard) and evaluatecheck(updatedboard)):
+            return True
+        else:
+            return False
+    elif(move[0] == "Q"):
+        if(queenmove(move, chessboard) and evaluatecheck(updatedboard)):
+            return True
+        else:
+            return False
+    elif(move[0] == "R"):
+         if(rookmove(move, chessboard) and evaluatecheck(updatedboard)):
+            return True
+        else:
+            return False
+    elif(move[0] == "B"):
+         if(bishopmove(move, chessboard) and evaluatecheck(updatedboard)):
+            return True
+        else:
+            return False
+    elif(move[0] == "N"):
+         if(knightmove(move, chessboard) and evaluatecheck(updatedboard)):
+            return True
+        else:
+            return False
+    elif(move[0] in ["a", "b", "c", "d", "e", "f", "g", "h"):
+         if(pawnmove(move, chessboard) and evaluatecheck(updatedboard)):
+            return True
+        else:
+            return False
+    
+   
+       
 def executemove(move, chessboard):
     # TODO alter a given chessboard based on a provided move.
     return
@@ -141,13 +236,18 @@ chessboard = [
 # Tracks whether castling is possible for white and black, kingside and queenside (in that order).
 castling = [True, True, True, True]
 
+# Tracks whether white or black is in check.
+inCheck = [False, False]
+
 # Tracks whether the game has ended, whether through a resignation, an accepted draw, or a checkmate.
 game = True
 # Tracks whether the entered move is impossible.
 impossiblemove = True
 
 # Taking move inputs.
-renderboard(chessboard)
+
+checkmovelegal("Na5", chessboard, True)
+
 while(game):
     while(impossiblemove):
         move = input("Enter a move: ")
