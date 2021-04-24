@@ -49,6 +49,9 @@ def stripmove(move):
     # TODO strip a move of any illegal characters. This includes capture or check indicators.
     # Iterating through each character.
     strippedMove = "" # Hold stripped move
+    
+    # May want to return an error here under some circumstances.
+    
     for i in range(len(move)):
         # If it's not a legal character.
         if(move[i] in ['=','-','a','b','c','d','e','f','g','h','0','1','2','3','4','5','6','7','8', 'K','Q','R','B','N']):
@@ -144,12 +147,13 @@ def checkmovelegal(move, chessboard, white):
 
 def findoriginatingsquare(move, chessboard):
     # TODO find the originating square of a given move that has been "stripped." 
-    # The originating square is returned as a two-digit integer where the first digit represents the column coordinate
-    # and the second digit represents the row coordinate. This is stored as one digit above the actual index as 00
+    # The originating square is returned as a two-digit integer where the first digit represents the column (i.e. 1 - 8) coordinate
+    # and the second digit represents the row (i.e. a - h) coordinate. This is stored as one digit above the actual index as 00
     # would be simplified to 0.
     
     
     # Unfinished. In process of conversion to integer return.
+    # Probably very buggy. Unit testing is very much needed.
     
     originatingPiece = 'W' # The needed information about the originating piece (piece and color)
     if(move[0] == 'Z'): # If the originating piece is black
@@ -169,44 +173,62 @@ def findoriginatingsquare(move, chessboard):
         return 99
     if(originatingPiece[1] == 'K'): # Can skip originating square logic because max one king.
         # Iterating through all the pieces on the board.
-        for i in range 8:
-            for j in range 8:
+        for i in range(8):
+            for j in range(8):
                 # If the king is found on the chessboard, then return the corresponding square.
                 if(originatingPiece == chessboard[i][j]):
-                    return ((10 * ++i) + ++j)
+                    return ((10 * (i + 1) + (j+1)))
     # Normal evaluation for major pieces which there could be multiple of.
     elif(originatingPiece[1] in ['Q','R','B','N']):
         # Iterating through all the pieces on the board.
-        for i in range 8:
-            for j in range 8:
+        for i in range(8):
+            for j in range(8):
                 # If the piece is found on the chessboard
                 if(originatingPiece[1] == (chessboard[i][j])[1] and (chessboard[i][j])[0] == originatingPiece[0]):
                     # Add its square to the possible originating locations.
-                    possibleoriginatinglocations.append(((10 * ++i) + ++j))
+                    possibleoriginatinglocations.append(((10 * (i + 1) + (j+1))))
         # If there's only one possible originating location then return that.
-        if(len(possibleoriginatinglocations) = 1):
+        if(len(possibleoriginatinglocations) == 1):
             return possibleoriginatinglocations[0]
         # Otherwise iterate through the possible originating locations with different logic for different move formatting / length.
         else:
             # Iterating through the possible originating locations for moves that are specified with a row OR column.
             if(move.len == 5):
                 for i in range(len(possibleoriginatinglocations)):
-                    if(move[2] == (possibleoriginatinglocations[i] ) or move[3] == ): # FIXME I AM NOT CORRECT FINISH IMPLEMENTING INTEGER RETURN FROM HERE DOWN
+                    if((squaremapping[(int((i / 10)) - 1)][((i % 10) - 1)])[0] == move[2] or (squaremapping[int(i / 10) - 1][(i % 10) - 1])[1] == move[2]):
                         return possibleoriginatinglocations[i]
             # Iterating through the possible originating locations for moves that are specified with a row AND column.
             elif(move.len == 6):
-                if(move[1:2] == possibleoriginatinglocations[i]):
-                    return possibleoriginatinglocations[i]
+                for i in range(len(possibleoriginatinglocations)):
+                    if(( (squaremapping[int(i / 10) - 1][(i % 10) - 1])[0] == move[2]) and ((squaremapping[int(i / 10) - 1][(i % 10) - 1])[1] == move[3])):
+                        return possibleoriginatinglocations[i]
             else:
                 return "insufficient specification"
     # Pawn moves
     else:
         # Simple advancement.
         if(len(move) == 3):
+            for i in range(8):
+                for j in range(8):
+                    if(squaremapping[i][j] == move[1:3]):
+                        if(move[0] == 'W'):
+                            return ((10 * (i + 2) + (j+1)))
+                        else:
+                            return ((10 * (i) + (j+1)))
         # Capture 
         else:
             # White pawns advance one row while capturing, and the originating column must be indicated by definition.
-            return (originatingPiece[1] + str(int(move[2]--)))     
+            if(move[0] == 'W'):
+                print("beep")
+                for i in range(8):
+                    for j in range(8):
+                        if(squaremapping[i][j] == (move[1] + chr(int(move[3]) - 1))): # Borked
+                            return ((10 * (i + 1) + (j))) # Incrementing probably borked.
+            else:
+                for i in range(8):
+                    for j in range(8):
+                        if(squaremapping[i][j] == (move[1] + chr(int(move[3]) - 1))):
+                            return ((10 * (i + 1) + (j+1))) # Incrementing probably borked.
 
 def findfinalsquare(move):
     # TODO find the ending square of a given move that has already been stripped by stripmove().
@@ -394,11 +416,7 @@ def renderboard (chessboard):
 while(game):
     while(impossiblemove):
         move = input("Enter a move: ")
-        move = stripmove(move)
-        if(checkmovevalid(move)):
-            print('valid')
-        else:
-            print('invalid')
-    
+        temp = (findoriginatingsquare(move, chessboard))
+        print(squaremapping[int(temp / 10) - 1][(temp % 10) - 1])
 
     
